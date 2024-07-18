@@ -1,8 +1,8 @@
 package com.example.smartcontactmanager.controller;
 
-import com.example.smartcontactmanager.entities.User;
-import com.example.smartcontactmanager.repository.UserRepository;
+import com.example.smartcontactmanager.model.User;
 import com.example.smartcontactmanager.services.Message;
+import com.example.smartcontactmanager.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class HomeController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @RequestMapping("/")
     public String gotoHome(Model model) {
@@ -39,7 +39,7 @@ public class HomeController {
                 model.addAttribute("user",user);
                 return "signup";
             }
-            userRepository.save(user);
+            userService.saveUser(user);
             session.setAttribute("message", new Message("Successfully Registered", "alert-success"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,7 +49,7 @@ public class HomeController {
         return "signup";
     }
 
-    @RequestMapping("/login")
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String gotoLogin(Model model){
         model.addAttribute("title","Login");
         return "login";

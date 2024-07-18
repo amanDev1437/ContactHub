@@ -1,4 +1,4 @@
-package com.example.smartcontactmanager.entities;
+package com.example.smartcontactmanager.model;
 
 import jakarta.persistence.*;
 
@@ -9,11 +9,10 @@ public class Contact {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int contactId;
     private String name;
+    private String phone;
     private String nickname;
     private String work;
     private String email;
-    private String phone;
-    private String imgUrl;
 
     @ManyToOne
     private User user;
@@ -24,14 +23,6 @@ public class Contact {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
     }
 
     public String getEmail() {

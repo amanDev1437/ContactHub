@@ -1,4 +1,4 @@
-package com.example.smartcontactmanager.entities;
+package com.example.smartcontactmanager.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
