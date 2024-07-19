@@ -20,9 +20,9 @@
 
                         <p class="text-center" th:text="${session.message.content}"></p>
 
-
-
                     </div>
+
+                    <th:block th:text="${@sessionHelper.removeMessage()}"></th:block>
 
                     <h1 class="text-center">Register Here !!</h1>
 

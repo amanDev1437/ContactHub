@@ -15,6 +15,14 @@
 
                 <div class="my-card">
 
+                    <div th:if="${session.message}" th:classappend="${session.message.type}" class="alert text-center" role="alert">
+
+                        <p class="text-center" th:text="${session.message.content}"></p>
+
+                    </div>
+
+                    <th:block th:text="${@sessionHelper.removeMessage()}"></th:block>
+
                     <h1 class="text-center">Add New Contact</h1>
 
                     <form action="" th:action="@{/user/addContact}" method="post" th:object="${contact}">
@@ -63,8 +71,8 @@
 
                         <div class="container text-center">
 
-                            <button type="submit" class="btn btn-success mb-3">Add</button>
-                            <button type="reset" class="btn btn-warning mb-3">Reset</button>
+                            <button type="submit" class="btn btn-success btn-lg mb-3">Add</button>
+                            <button type="reset" class="btn btn-warning btn-lg mb-3">Reset</button>
                         </div>
 
                     </form>

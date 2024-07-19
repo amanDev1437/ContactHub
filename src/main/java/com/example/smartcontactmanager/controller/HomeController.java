@@ -12,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@SessionAttributes("message")
 public class HomeController {
 
     @Autowired
@@ -25,10 +24,9 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/signup")
-    public String showSignup(Model model, HttpSession session) {
+    public String showSignup(Model model) {
         model.addAttribute("title", "Register");
         model.addAttribute("user", new User());
-        addSessionMessageToModel(session, model);
         return "signup";
     }
 
@@ -43,9 +41,8 @@ public class HomeController {
             session.setAttribute("message", new Message("Successfully Registered", "alert-success"));
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("message", new Message("Something went wrong: " + e.getMessage(), "alert-danger"));
+            session.setAttribute("message", new Message("Something went wrong!!", "alert-danger"));
         }
-        addSessionMessageToModel(session, model);
         return "signup";
     }
 
@@ -55,10 +52,5 @@ public class HomeController {
         return "login";
     }
 
-    private void addSessionMessageToModel(HttpSession session, Model model) {
-        if (session.getAttribute("message") != null) {
-            model.addAttribute("message", session.getAttribute("message"));
-            session.removeAttribute("message");
-        }
-    }
+
 }

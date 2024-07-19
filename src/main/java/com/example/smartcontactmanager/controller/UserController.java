@@ -3,16 +3,17 @@ package com.example.smartcontactmanager.controller;
 import com.example.smartcontactmanager.model.Contact;
 import com.example.smartcontactmanager.model.User;
 import com.example.smartcontactmanager.services.ContactService;
+import com.example.smartcontactmanager.services.Message;
 import com.example.smartcontactmanager.services.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/user")
@@ -53,11 +54,32 @@ public class UserController {
     }
 
     @PostMapping("/addContact")
-    public String addContact(@ModelAttribute Contact contact){
+    public String addContact(@ModelAttribute Contact contact, Principal principal, HttpSession session,Model model){
 
-        contactService.saveContact(contact);
-        System.out.println(contact);
-        return "redirect:/user/index";
+        try{
+            contactService.saveContact(contact,principal);
+            session.setAttribute("message",new Message("Contact is added!!","alert-success"));
+        }catch (Exception e){
+            System.out.println("ERROR"+e.getMessage());
+            e.printStackTrace();
+            session.setAttribute("message",new Message("something went wrong !!","alert-danger"));
+        }
+
+        return "redirect:/user/addContact";
+    }
+
+    @GetMapping("/viewContact/{page}")
+    public String gotoViewContact(@PathVariable("page") Integer page, Model model, Principal principal){
+        model.addAttribute("title","View Contact");
+
+        User user = userService.getUser(principal.getName());
+        Page<Contact> contactList = contactService.getAllContact(user,page);
+
+        model.addAttribute("contactList",contactList);
+        model.addAttribute("currentPage",page);
+        model.addAttribute("totalPage",contactList.getTotalPages());
+
+        return "viewContact";
 
     }
 
