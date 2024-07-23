@@ -38,8 +38,31 @@ public class ContactService {
 
     public Page<Contact> getAllContact(User user, int page){
 
-        Pageable pageable = PageRequest.of(page,4);
+        Pageable pageable = PageRequest.of(page,3);
 
         return contactRepository.findContactByUserId(user.getUserId(),pageable);
     }
+
+    public Contact getContactById(int id){
+
+        return contactRepository.findById(id).get();
+
+    }
+
+    public void deleteContact(int id){
+
+        contactRepository.deleteById(id);
+    }
+
+    public int countContact(User user){
+
+        return contactRepository.findAllContact(user.getUserId()).size();
+
+    }
+
+    public List<Contact> searchContact(String keyword, User user){
+
+        return contactRepository.findByNameContainingAndUser(keyword, user);
+    }
+
 }

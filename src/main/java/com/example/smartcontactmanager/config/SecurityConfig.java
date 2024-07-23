@@ -35,7 +35,7 @@ public class SecurityConfig {
 
         http
                 .authorizeRequests()
-                .requestMatchers("/css/**","/img/**","/login","/signup","/").permitAll() // Public URLs
+                .requestMatchers("/css/**","/img/**","/login","/signup","/home","/").permitAll() // Public URLs
                 .anyRequest().authenticated();
         http.formLogin(customize->customize.loginPage("/login").defaultSuccessUrl("/user/index"));
 

@@ -17,7 +17,13 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/")
+    @GetMapping
+    public String redirectToHome(){
+
+        return "redirect:/home";
+    }
+
+    @RequestMapping("/home")
     public String gotoHome(Model model) {
         model.addAttribute("title", "Home");
         return "home";

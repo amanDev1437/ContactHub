@@ -12,7 +12,23 @@
 
             <div class="col-md-12">
 
+                <div th:if="${session.message}" th:classappend="${session.message.type}" class="text-center" role="alert">
+
+                    <p class="text-center text-large" th:text="${session.message.content}"></p>
+
+                </div>
+
+                <th:block th:text="${@sessionHelper.removeMessage()}"></th:block>
+
                 <h1 class="text-center my-card">Your Contacts</h1>
+
+                <div class="search-container my-3">
+                    <input onkeyup="search()" id="search-input" type="text" class="form-control my-card" placeholder="search your contact">
+
+                    <div class="search-result">
+
+                    </div>
+                </div>
 
                 <table class="table table-dark my-card">
                     <thead>
@@ -27,14 +43,13 @@
                     <tbody>
 
                     <tr th:each="c, itr : ${contactList}">
-                        <td><span th:text="${itr.count}"></span></th>
+                        <td><span th:text="${itr.count+(currentPage*3)}"></span></th>
                         <td><span th:text="${c.name}"></span></td>
                         <td><span th:text="${c.phone}"></span></td>
                         <td><span th:text="${c.email}"></span></td>
                         <td>
-                            <a href="#"><i class="fa-solid fa-trash text-danger margin-10"></i></a>
-                            <a href="#"><i class="fas fa-pen-nib text-primary"></i></a>
-
+                            <a href="#" th:attr="onclick=|deleteContact('${c.contactId}')|"><i class="fa-solid fa-trash text-danger margin-10"></i></a>
+                            <a href="#" th:href="@{'/user/update/'+${c.contactId}}"><i class="fas fa-pen-nib text-primary"></i></a>
                         </td>
                     </tr>
 
@@ -42,15 +57,15 @@
                 </table>
 
                 <nav aria-label="...">
-                    <ul class="pagination">
-                        <li th:classappend="${currentPage== 0 ? 'disabled':''}" class="page-item">
+                    <ul class="pagination" th:if="${totalPage>0}">
+                        <li th:classappend="${currentPage==0 ? 'disabled':''}" class="page-item">
                             <a class="page-link" th:href="${currentPage-1}" tabindex="-1" aria-disabled="true">Previous</a>
                         </li>
-                        <li th:classappend="${currentPage==i-1?'active':''}" th:each="i :${#numbers.sequence(1,totalPage)}" class="page-item">
+                        <li th:classappend="${currentPage==i-1 ?'active':''}" th:each="i :${#numbers.sequence(1,totalPage)}" class="page-item">
                             <a th:text="${i}" class="page-link" th:href="${i-1}"></a>
                         </li>
 
-                        <li th:classappend="${currentPage+1==totalPage ? 'disabled':''}" class="page-item">
+                        <li th:classappend="${currentPage>=totalPage-1 ? 'disabled':''}" class="page-item">
                             <a class="page-link" th:href="${currentPage+1}" >Next</a>
                         </li>
                     </ul>
@@ -65,4 +80,5 @@
 
 </section>
 </body>
+
 </html>

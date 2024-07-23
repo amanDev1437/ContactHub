@@ -1,5 +1,6 @@
 package com.example.smartcontactmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,6 +16,7 @@ public class Contact {
     private String email;
 
     @ManyToOne
+    @JsonIgnore
     private User user;
 
     public String getPhone() {

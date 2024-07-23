@@ -1,6 +1,5 @@
 package com.example.smartcontactmanager.services;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;

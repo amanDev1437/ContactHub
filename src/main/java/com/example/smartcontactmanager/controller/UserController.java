@@ -5,6 +5,7 @@ import com.example.smartcontactmanager.model.User;
 import com.example.smartcontactmanager.services.ContactService;
 import com.example.smartcontactmanager.services.Message;
 import com.example.smartcontactmanager.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -77,10 +78,65 @@ public class UserController {
 
         model.addAttribute("contactList",contactList);
         model.addAttribute("currentPage",page);
+
         model.addAttribute("totalPage",contactList.getTotalPages());
 
         return "viewContact";
 
     }
+
+    @GetMapping("/delete/{contactId}")
+    public String deleteContact(@PathVariable int contactId, HttpSession session, HttpServletRequest request){
+
+        contactService.deleteContact(contactId);
+
+        session.setAttribute("message",new Message("contact deleted successfully","alert-success"));
+
+        String url = request.getHeader("Referer");
+
+        session.setAttribute("url",url);
+
+        return "redirect:/user/viewContact/0";
+
+    }
+
+    @GetMapping("/update/{contactId}")
+    public String updateContact(@PathVariable int contactId,Model model, HttpSession session){
+
+        model.addAttribute("title","update");
+
+        model.addAttribute("contact",contactService.getContactById(contactId));
+
+
+        return "updateContact";
+    }
+
+    @PostMapping("/updateContact")
+    public String updateContact(@ModelAttribute Contact contact,HttpSession session,Principal principal){
+
+
+        contactService.saveContact(contact,principal);
+
+        session.setAttribute("message",new Message("Contact updated successfully","alert-success"));
+
+
+        return "redirect:/user/viewContact/0";
+    }
+
+    @GetMapping("/profile")
+    public String gotoProfile(Model model, Principal principal){
+
+        User user = userService.getUser(principal.getName());
+
+        int totalContact = contactService.countContact(user);
+
+        model.addAttribute("title","Profile");
+
+        model.addAttribute("totalContact",totalContact);
+
+        return "profile";
+    }
+
+
 
 }
