@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+
 
 @Configuration
 @EnableWebSecurity
@@ -37,12 +37,19 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .requestMatchers("/css/**","/img/**","/login","/signup","/home","/").permitAll() // Public URLs
                 .anyRequest().authenticated();
+
         http.formLogin(customize->customize.loginPage("/login").defaultSuccessUrl("/user/index"));
 
         http.csrf(customize-> customize.disable());
 
+
         return http.build();
 
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder(12);
     }
 
 }

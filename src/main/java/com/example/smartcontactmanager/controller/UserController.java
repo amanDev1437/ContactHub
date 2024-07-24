@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,9 @@ public class UserController {
 
     @Autowired
     private ContactService contactService;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @ModelAttribute
     public void addCommonData(Model model, Principal principal){
@@ -137,6 +141,30 @@ public class UserController {
         return "profile";
     }
 
+    @GetMapping("/setting")
+    public String gotoSetting(){
+
+        return "setting";
+    }
+
+    @PostMapping("/changePassword")
+    public String changePassword(@RequestParam String oldPassword, @RequestParam String newPassword,Principal principal,HttpSession session){
+
+        User user = userService.getUser(principal.getName());
+
+
+        if(bCryptPasswordEncoder.matches(oldPassword, user.getPassword())){
+
+            user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+            userService.saveUser(user);
+
+            session.setAttribute("message",new Message("Password Changed Successfully","alert-success"));
+        }else {
+            session.setAttribute("message",new Message("Incorrect old password","alert-danger"));
+        }
+
+        return "redirect:/user/setting";
+    }
 
 
 }
