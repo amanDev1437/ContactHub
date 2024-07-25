@@ -19,13 +19,16 @@ public class SecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Bean
     public AuthenticationProvider authProvider(){
 
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 
         provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
+        provider.setPasswordEncoder(bCryptPasswordEncoder);
 
         return provider;
     }
@@ -35,7 +38,7 @@ public class SecurityConfig {
 
         http
                 .authorizeRequests()
-                .requestMatchers("/css/**","/img/**","/login","/signup","/home","/").permitAll() // Public URLs
+                .requestMatchers("/css/**","/img/**","/login","/signup","/home","/","/forgetPassword/**").permitAll() // Public URLs
                 .anyRequest().authenticated();
 
         http.formLogin(customize->customize.loginPage("/login").defaultSuccessUrl("/user/index"));
@@ -47,9 +50,6 @@ public class SecurityConfig {
 
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder(12);
-    }
+
 
 }

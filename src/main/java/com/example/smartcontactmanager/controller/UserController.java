@@ -3,6 +3,7 @@ package com.example.smartcontactmanager.controller;
 import com.example.smartcontactmanager.model.Contact;
 import com.example.smartcontactmanager.model.User;
 import com.example.smartcontactmanager.services.ContactService;
+import com.example.smartcontactmanager.services.EmailService;
 import com.example.smartcontactmanager.services.Message;
 import com.example.smartcontactmanager.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
+
 
 @Controller
 @RequestMapping("/user")
@@ -57,6 +58,7 @@ public class UserController {
 
         return "addContact";
     }
+
 
     @PostMapping("/addContact")
     public String addContact(@ModelAttribute Contact contact, Principal principal, HttpSession session,Model model){
@@ -155,7 +157,10 @@ public class UserController {
 
         if(bCryptPasswordEncoder.matches(oldPassword, user.getPassword())){
 
-            user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+            System.out.println(newPassword);
+
+
+            user.setPassword(newPassword);
             userService.saveUser(user);
 
             session.setAttribute("message",new Message("Password Changed Successfully","alert-success"));

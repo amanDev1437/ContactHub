@@ -1,6 +1,7 @@
 package com.example.smartcontactmanager.controller;
 
 import com.example.smartcontactmanager.model.User;
+import com.example.smartcontactmanager.services.EmailService;
 import com.example.smartcontactmanager.services.Message;
 import com.example.smartcontactmanager.services.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -16,6 +17,9 @@ public class HomeController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping
     public String redirectToHome(){
@@ -38,11 +42,14 @@ public class HomeController {
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public String registerUser(@Valid @ModelAttribute("user") User user,BindingResult result, Model model, HttpSession session ) {
+
+
         try {
             if(result.hasErrors()){
                 model.addAttribute("user",user);
                 return "signup";
             }
+
             userService.saveUser(user);
             session.setAttribute("message", new Message("Successfully Registered", "alert-success"));
         } catch (Exception e) {
