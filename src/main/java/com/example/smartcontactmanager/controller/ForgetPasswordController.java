@@ -7,6 +7,7 @@ import com.example.smartcontactmanager.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,14 +29,16 @@ public class ForgetPasswordController {
     Random random = new Random(100000);
 
     @GetMapping("/reset")
-    public String gotoForgetPassword(){
+    public String gotoForgetPassword(Model model){
+
+        model.addAttribute("title","Reset Password");
 
         return "forgetPassword";
 
     }
 
     @PostMapping("/reset")
-    public String forgetPassword(@RequestParam String email, HttpSession session){
+    public String forgetPassword(@RequestParam String email,Model model, HttpSession session){
 
         if(userService.getUser(email)==null){
 
@@ -57,6 +60,7 @@ public class ForgetPasswordController {
             session.setAttribute("email",email);
             session.setAttribute("message",new Message("OTP sent on email !!","alert-success"));
 
+            model.addAttribute("title","Verify");
             return "verifyOtp";
         }else{
             session.setAttribute("message",new Message("Something went wrong !!","alert-danger"));
@@ -66,12 +70,14 @@ public class ForgetPasswordController {
     }
 
     @PostMapping("/verifyOtp")
-    public String verifyOtp(@RequestParam("otp") Integer enterOTP,HttpSession session){
+    public String verifyOtp(@RequestParam("otp") Integer enterOTP,Model model,HttpSession session){
 
         Integer sentOTP = (Integer) session.getAttribute("sentOTP");
 
 
         if(Objects.equals(sentOTP, enterOTP)){
+
+            model.addAttribute("title","New Password");
             return "newPassword";
         }else {
             session.setAttribute("message",new Message("Invalid OTP","alert-danger"));

@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+
 @Controller
 public class HomeController {
 
@@ -43,13 +44,15 @@ public class HomeController {
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public String registerUser(@Valid @ModelAttribute("user") User user,BindingResult result, Model model, HttpSession session ) {
 
-
+        String subject = "Welcome To ContactHub";
+        String body = "Dear "+user.getName();
+        body+= "\nWelcome to ContactHub, Your login credentials are: username= "+user.getEmail()+" and password= "+user.getPassword();
         try {
             if(result.hasErrors()){
                 model.addAttribute("user",user);
                 return "signup";
             }
-
+            emailService.sendEmail(subject,body,user.getEmail());
             userService.saveUser(user);
             session.setAttribute("message", new Message("Successfully Registered", "alert-success"));
         } catch (Exception e) {
@@ -64,6 +67,5 @@ public class HomeController {
         model.addAttribute("title","Login");
         return "login";
     }
-
 
 }
