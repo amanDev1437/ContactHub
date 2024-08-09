@@ -144,7 +144,9 @@ public class UserController {
     }
 
     @GetMapping("/setting")
-    public String gotoSetting(){
+    public String gotoSetting(Model model){
+
+        model.addAttribute("title","Setting");
 
         return "setting";
     }
